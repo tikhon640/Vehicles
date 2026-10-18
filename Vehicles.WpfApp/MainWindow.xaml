@@ -1,41 +1,116 @@
 ﻿<Window x:Class="Vehicles.WpfApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Vehicles" Height="450" Width="650" WindowStartupLocation="CenterScreen">
+        Title="Vehicles"
+        Height="500"
+        Width="700"
+        WindowStartupLocation="CenterScreen">
+
     <Grid Margin="15">
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Левая панель -->
-        <StackPanel Grid.Column="0" Margin="0,0,10,0">
-            <TextBlock Text="Sõidukid" FontWeight="Bold" Margin="0,0,0,5"/>
-            <ListBox x:Name="lstVehicles" Height="220" SelectionChanged="lstVehicles_SelectionChanged"/>
+        <StackPanel Grid.Column="0">
 
-            <Button Content="Lisa auto" Click="BtnAddCar_Click" Margin="0,10,0,2"/>
-            <Button Content="Lisa paat" Click="BtnAddBoat_Click" Margin="0,2,0,2"/>
-            <Button Content="Lisa amfiib" Click="BtnAddAmphibian_Click" Margin="0,2,0,0"/>
+            <TextBlock Text="Vali garaaž"
+                       FontWeight="Bold"/>
+
+            <ComboBox x:Name="cmbGarage"
+                      SelectedIndex="0"
+                      Margin="0,5,0,10">
+                <ComboBoxItem Content="Garage A"/>
+                <ComboBoxItem Content="Garage B"/>
+            </ComboBox>
+
+            <TextBlock Text="Garage A"
+                       FontWeight="Bold"/>
+
+            <ListBox x:Name="lstGarageA"
+                     Height="120"
+                     SelectionChanged="lstGarageA_SelectionChanged"/>
+
+            <TextBlock Text="Garage B"
+                       FontWeight="Bold"
+                       Margin="0,10,0,0"/>
+
+            <ListBox x:Name="lstGarageB"
+                     Height="120"
+                     SelectionChanged="lstGarageB_SelectionChanged"/>
+
+            <Button Content="Lisa auto"
+                    Click="BtnAddCar_Click"
+                    Margin="0,10,0,2"/>
+
+            <Button Content="Lisa paat"
+                    Click="BtnAddBoat_Click"
+                    Margin="0,2,0,2"/>
+
+            <Button Content="Lisa amfiib"
+                    Click="BtnAddAmphibian_Click"
+                    Margin="0,2,0,0"/>
+
         </StackPanel>
 
-        <!-- Правая панель -->
-        <StackPanel Grid.Column="1" Margin="10,0,0,0">
-            <TextBlock x:Name="lblSelectedVehicle" Text="Valitud: -" FontSize="14" FontWeight="Bold"/>
-            <TextBlock x:Name="lblOdometer" Text="Läbisõit: 0 km" Margin="0,5,0,10"/>
+        <StackPanel Grid.Column="1"
+                    Margin="15,0,0,0">
 
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <TextBlock Text="Vahemaa: " VerticalAlignment="Center"/>
-                <TextBox x:Name="txtDistance" Width="100" Margin="5,0,0,0" Text="10"/>
+            <TextBlock x:Name="lblSelectedVehicle"
+                       Text="Valitud: -"
+                       FontSize="14"
+                       FontWeight="Bold"/>
+
+            <TextBlock x:Name="lblOdometer"
+                       Text="Läbisõit: 0 km"
+                       Margin="0,5,0,10"/>
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,0,0,10">
+
+                <TextBlock Text="Vahemaa:"
+                           VerticalAlignment="Center"/>
+
+                <TextBox x:Name="txtDistance"
+                         Width="100"
+                         Margin="5,0,0,0"
+                         Text="10"/>
+
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                <Button x:Name="btnDrive" Content="Sõida" Width="75" Margin="0,0,5,0" Click="BtnDrive_Click" IsEnabled="False"/>
-                <Button x:Name="btnSwim" Content="Uju" Width="75" Margin="0,0,5,0" Click="BtnSwim_Click" IsEnabled="False"/>
-                <Button x:Name="btnRemove" Content="Eemalda" Width="75" Background="#FFFDEDED" Click="BtnRemove_Click" IsEnabled="False"/>
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,0,0,15">
+
+                <Button x:Name="btnDrive"
+                        Content="Sõida"
+                        Width="75"
+                        Margin="0,0,5,0"
+                        Click="BtnDrive_Click"
+                        IsEnabled="False"/>
+
+                <Button x:Name="btnSwim"
+                        Content="Uju"
+                        Width="75"
+                        Margin="0,0,5,0"
+                        Click="BtnSwim_Click"
+                        IsEnabled="False"/>
+
+                <Button x:Name="btnRemove"
+                        Content="Eemalda"
+                        Width="75"
+                        Click="BtnRemove_Click"
+                        IsEnabled="False"/>
             </StackPanel>
 
-            <TextBlock Text="Tegevuste logi" FontWeight="Bold" Margin="0,0,0,5"/>
-            <ListBox x:Name="lstLog" Height="140"/>
+            <TextBlock Text="Tegevuste logi"
+                       FontWeight="Bold"
+                       Margin="0,0,0,5"/>
+
+            <ListBox x:Name="lstLog"
+                     Height="180"/>
+
         </StackPanel>
+
     </Grid>
 </Window>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Vehicles.Core;
@@ -8,40 +7,81 @@ namespace Vehicles.WpfApp
 {
     public partial class MainWindow : Window
     {
-        public ObservableCollection<Vehicle> VehiclesCollection { get; set; }
+        private Garage garageA;
+        private Garage garageB;
+
+        private Vehicle? SelectedVehicle;
+        private Garage? SelectedGarage;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            VehiclesCollection = new ObservableCollection<Vehicle>
-            {
-                new Car("Volvo", "V60", 120),
-                new Boat("Bella", "600"),
-                new AmphibiousCar("Amphi", "X")
-            };
+            garageA = new Garage("A");
+            garageB = new Garage("B");
 
-            lstVehicles.ItemsSource = VehiclesCollection;
+            garageA.LogGenerated += message => lstLog.Items.Add(message);
+            garageB.LogGenerated += message => lstLog.Items.Add(message);
+
+            garageA.AddVehicle(new Car("Volvo", "V60", 120));
+            garageA.AddVehicle(new Boat("Bella", "600"));
+
+            garageB.AddVehicle(new AmphibiousCar("Amphi", "X"));
+
+            lstGarageA.ItemsSource = garageA.Vehicles;
+            lstGarageB.ItemsSource = garageB.Vehicles;
         }
 
-        private Vehicle? SelectedVehicle => lstVehicles.SelectedItem as Vehicle;
-
-        private void lstVehicles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private Garage CurrentGarage
         {
-            var vehicle = SelectedVehicle;
-            if (vehicle != null)
+            get
             {
-                lblSelectedVehicle.Text = $"Valitud: {vehicle.Make} {vehicle.Model}";
-                lblOdometer.Text = $"Läbisõit: {vehicle.Odometer} km";
+                if (cmbGarage.SelectedIndex == 1)
+                    return garageB;
 
-                btnDrive.IsEnabled = vehicle is IDriveable;
-                btnSwim.IsEnabled = vehicle is ISwimmable;
+                return garageA;
+            }
+        }
+
+        private void lstGarageA_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectedVehicle = lstGarageA.SelectedItem as Vehicle;
+            SelectedGarage = garageA;
+
+            UpdateSelectedVehicle();
+        }
+
+        private void lstGarageB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectedVehicle = lstGarageB.SelectedItem as Vehicle;
+            SelectedGarage = garageB;
+
+            UpdateSelectedVehicle();
+        }
+
+        private void UpdateSelectedVehicle()
+        {
+            if (SelectedVehicle != null)
+            {
+                lblSelectedVehicle.Text =
+                    $"Valitud: {SelectedVehicle.Make} {SelectedVehicle.Model}";
+
+                lblOdometer.Text =
+                    $"Läbisõit: {SelectedVehicle.Odometer} km";
+
+                btnDrive.IsEnabled =
+                    SelectedVehicle is IDriveable;
+
+                btnSwim.IsEnabled =
+                    SelectedVehicle is ISwimmable;
+
                 btnRemove.IsEnabled = true;
             }
             else
             {
                 lblSelectedVehicle.Text = "Valitud: -";
                 lblOdometer.Text = "Läbisõit: 0 km";
+
                 btnDrive.IsEnabled = false;
                 btnSwim.IsEnabled = false;
                 btnRemove.IsEnabled = false;
@@ -69,12 +109,20 @@ namespace Vehicles.WpfApp
             try
             {
                 string message = action();
-                lstLog.Items.Add($"{message} Läbisõit: {SelectedVehicle.Odometer} km.");
-                lblOdometer.Text = $"Läbisõit: {SelectedVehicle.Odometer} km";
+
+                lstLog.Items.Add(
+                    $"{message} Läbisõit: {SelectedVehicle?.Odometer} km");
+
+                lblOdometer.Text =
+                    $"Läbisõit: {SelectedVehicle?.Odometer} km";
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Viga", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    ex.Message,
+                    "Viga",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
         }
 
@@ -84,29 +132,38 @@ namespace Vehicles.WpfApp
             {
                 throw new ArgumentException("Sisesta korrektne number!");
             }
+
             return distance;
         }
 
         private void BtnAddCar_Click(object sender, RoutedEventArgs e)
         {
-            VehiclesCollection.Add(new Car("Audi", "A4"));
+            CurrentGarage.AddVehicle(
+                new Car("Audi", "A4"));
         }
 
         private void BtnAddBoat_Click(object sender, RoutedEventArgs e)
         {
-            VehiclesCollection.Add(new Boat("Yamaha", "242X"));
+            CurrentGarage.AddVehicle(
+                new Boat("Yamaha", "242X"));
         }
 
         private void BtnAddAmphibian_Click(object sender, RoutedEventArgs e)
         {
-            VehiclesCollection.Add(new AmphibiousCar("Gibbs", "Aquada"));
+            CurrentGarage.AddVehicle(
+                new AmphibiousCar("Gibbs", "Aquada"));
         }
 
         private void BtnRemove_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedVehicle != null)
+            if (SelectedVehicle != null &&
+                SelectedGarage != null)
             {
-                VehiclesCollection.Remove(SelectedVehicle);
+                SelectedGarage.RemoveVehicle(SelectedVehicle);
+
+                SelectedVehicle = null;
+
+                UpdateSelectedVehicle();
             }
         }
     }
